@@ -5,8 +5,6 @@ import com.typesafe.scalalogging.LazyLogging
 import io.circe.{HCursor, Json}
 import io.circe.jawn.CirceSupportParser
 
-import scala.util.Try
-
 object RatesUpdater extends LazyLogging {
 
   def addNewRates(jsonList: NonEmptyList[String]): Unit = {
@@ -49,8 +47,6 @@ object RatesUpdater extends LazyLogging {
       }.top
     }
   }
-
-  private def tryToOption(tryJson: Try[Json]): Option[Json] = tryJson.toOption
 
   val currencies = NonEmptyList.of("GBP", "USD")
   val parser = new CirceSupportParser(None)
