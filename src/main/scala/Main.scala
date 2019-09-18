@@ -31,10 +31,8 @@ object Main extends IOApp {
 
     val x = for {
       lr <- nenResponses
-      fr <- IO.shift *> IO.sleep(finiteFetchInterval) >> IO(addNewRates(lr.map(_.unsafeBody))).foreverM[Unit].start
-      fc <- IO.shift *> IO.sleep(finiteCleanUpInterval) >> IO(cleanUp(cleanUpInterval)).foreverM[Unit].start
-      _ <- fr.join
-      _ <- fc.join
+      fr <- { IO { addNewRates(lr.map(_.unsafeBody)) } >> IO.shift *> IO.sleep(finiteFetchInterval) }.foreverM.start
+      fc <- { IO { cleanUp(cleanUpInterval) } >>  IO.shift *> IO.sleep(finiteCleanUpInterval) }.foreverM.start
     } yield ()
 
     x as ExitCode.Success
